@@ -4,33 +4,6 @@ import json
 import os
 from urlparse import urlparse
 
-from flask import Flask, render_template, request, redirect, session
-from flask_sslify import SSLify
-from rauth import OAuth2Service
-import requests
-
-app = Flask(__name__, static_folder='static', static_url_path='')
-app.requests_session = requests.Session()
-app.secret_key = os.urandom(24)
-
-sslify = SSLify(app)
-
-with open('config.json') as f:
-    config = json.load(f)
-
-
-def generate_oauth_service():
-    """Prepare the OAuth2Service that is used to make requests later."""
-    return OAuth2Service(
-        client_id=os.environ.get('UBER_CLIENT_ID'),
-        client_secret=os.environ.get('UBER_CLIENT_SECRET'),
-        name=config.get('name'),
-        authorize_url=config.get('authorize_url'),
-        access_token_url=config.get('access_token_url'),
-        base_url=config.get('base_url'),
-    )
-
-
 def generate_ride_headers(token):
     """Generate the header object that is used to make api requests."""
     return {
